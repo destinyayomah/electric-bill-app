@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:electricbillpayment/services/api.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +11,7 @@ class Dashboard extends StatefulWidget {
   State<Dashboard> createState() => _DashboardState();
 }
 
+// GENERIC DIALOG POPUP
 void dialogMessage(context, type, message) {
   showDialog(
     context: context,
@@ -31,10 +30,12 @@ void dialogMessage(context, type, message) {
 }
 
 class _DashboardState extends State<Dashboard> {
-  dynamic userData;
+  dynamic userData; // USER DATE WOULD BE STORED HERE
 
+  // GET USER DATA
   Future<void> fetchUser() async {
     try {
+      // VERIFY USER TOKEN USING JWT
       final jwt = JWT.verify(
         widget.token['token'],
         SecretKey('ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'),
@@ -42,7 +43,11 @@ class _DashboardState extends State<Dashboard> {
 
       final String id = jwt.payload['id'];
       final data = {'id': id, 'token': widget.token['token']};
+
+      // BEGIN API CALL TO GET USER DATA
       final response = await Api.getAUser(data);
+
+      // UPDATE USER DATA
       setState(() {
         userData = response;
       });
@@ -53,6 +58,7 @@ class _DashboardState extends State<Dashboard> {
     }
   }
 
+  // FETCH USER DATA ON COMPONENT MOUNT
   @override
   void initState() {
     super.initState();
@@ -63,7 +69,9 @@ class _DashboardState extends State<Dashboard> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: userData != null ? Text(userData['fullname']) : Text('No data'),
+        child: userData != null
+            ? Text(userData['fullname'])
+            : const Text('No data'),
       ),
     );
   }

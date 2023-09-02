@@ -1,5 +1,3 @@
-import 'package:electricbillpayment/pages/dashboard.dart';
-import 'package:electricbillpayment/pages/home.dart';
 import 'package:electricbillpayment/pages/login.dart';
 import 'package:electricbillpayment/pages/register.dart';
 import 'package:electricbillpayment/pages/splash.dart';
@@ -26,7 +24,6 @@ class MyApp extends StatelessWidget {
       routes: {
         '/login': (context) => const Login(),
         '/register': (context) => const Register(),
-        // '/dashboard': (context) => const Dashboard(),
       },
     );
   }

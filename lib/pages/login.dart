@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:electricbillpayment/components/custom_input_field.dart';
 import 'package:electricbillpayment/pages/dashboard.dart';
 import 'package:electricbillpayment/pages/register.dart';
@@ -24,6 +23,7 @@ class _LoginState extends State<Login> {
   var canSubmit = false;
   bool isLoading = false;
 
+  // HIDE AND SHOW CREATE BUTTON IF ALL FIELDS ARE FILLED
   void submitable() {
     setState(() {
       if (emailController.text.isNotEmpty &&
@@ -35,6 +35,7 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // HIDE AND SHOW PASSWORD FIELD AND VISIBILITY ICON
   void changeVisiblity() {
     setState(() {
       if (hidePassword) {
@@ -45,6 +46,7 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // CHANGE BUTTON STATE TO LOADING WITH SPINNER
   void processingSubmit() {
     setState(() {
       canSubmit = false;
@@ -52,6 +54,7 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // REMOVE BUTTON STATE FROM LOADING AND SPINNER
   void processedSubmit() {
     setState(() {
       canSubmit = true;
@@ -59,6 +62,7 @@ class _LoginState extends State<Login> {
     });
   }
 
+  // GENERIC NOTIFICATION POPUP WITH BACKDROP
   void dialogMessage(type, message) {
     showDialog(
       context: context,
@@ -76,6 +80,7 @@ class _LoginState extends State<Login> {
     );
   }
 
+  // NAVIGATION TO DASHBOARD WITH TOKEN
   void goToDashboard(token) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -90,6 +95,7 @@ class _LoginState extends State<Login> {
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // TOP WAVE IMAGE SECTION
             Stack(
               children: [
                 const SizedBox(
@@ -131,6 +137,7 @@ class _LoginState extends State<Login> {
               style: TextStyle(fontSize: 18, color: Colors.black54),
             ),
             const SizedBox(height: 30),
+            // EMAIL FIELD
             FocusScope(
               node: _focusScopeNode,
               child: CustomTextField(
@@ -141,6 +148,7 @@ class _LoginState extends State<Login> {
               ),
             ),
             const SizedBox(height: 15),
+            // PASSWORD FIELD
             FocusScope(
               node: _focusScopeNode,
               child: CustomPasswordField(
@@ -150,6 +158,7 @@ class _LoginState extends State<Login> {
                 changeVisiblity: changeVisiblity,
               ),
             ),
+            // REMEMBER ME AND FORGOT PASSWORD
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Row(
@@ -181,14 +190,46 @@ class _LoginState extends State<Login> {
               ),
             ),
             const SizedBox(height: 10),
+            // LOGIN BUTTON
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   style: primaryButton(),
+                  onPressed: canSubmit
+                      ? () async {
+                          // HIDE KEYBOARD
+                          _focusScopeNode.unfocus();
+
+                          // UPDATE LOGIN BUTTON STATE
+                          processingSubmit();
+
+                          var data = {
+                            "email": emailController.text,
+                            "password": passwordController.text
+                          };
+
+                          /// CALLING API
+                          final response = await Api.login(data);
+
+                          // IF RESPONSE IS SUCCESSFUL, GO TO DASHBOARD
+                          if (response['type'] == 'success') {
+                            goToDashboard({'token': response['token']});
+                          }
+
+                          // IF API CALL IS SUCCESSFUL OR NOT SHOW A CUSTOM MESSAGE
+                          dialogMessage(
+                            response['type'],
+                            response['message'],
+                          );
+
+                          // UPDATE BUTTON LOADING STATE
+                          processedSubmit();
+                        }
+                      : null,
                   child: isLoading
-                      ? CircularProgressIndicator(
+                      ? const CircularProgressIndicator(
                           color: Colors.white,
                         )
                       : const Text(
@@ -199,41 +240,6 @@ class _LoginState extends State<Login> {
                             fontSize: 18,
                           ),
                         ),
-                  onPressed: canSubmit
-                      ? () async {
-                          _focusScopeNode.unfocus();
-
-                          processingSubmit();
-
-                          if (emailController.text.isEmpty ||
-                              passwordController.text.isEmpty) {
-                            dialogMessage(
-                              'info',
-                              'Email and password are required',
-                            );
-
-                            return;
-                          }
-
-                          var data = {
-                            "email": emailController.text,
-                            "password": passwordController.text
-                          };
-
-                          final response = await Api.login(data);
-
-                          if (response['type'] == 'success') {
-                            goToDashboard({'token': response['token']});
-                          }
-
-                          dialogMessage(
-                            response['type'],
-                            response['message'],
-                          );
-
-                          processedSubmit();
-                        }
-                      : null,
                 ),
               ),
             ),

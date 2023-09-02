@@ -1,4 +1,3 @@
-import 'package:awesome_snackbar_content/awesome_snackbar_content.dart';
 import 'package:electricbillpayment/components/custom_input_field.dart';
 import 'package:electricbillpayment/components/icon_button.dart';
 import 'package:electricbillpayment/pages/dashboard.dart';
@@ -24,6 +23,7 @@ class _RegisterState extends State<Register> {
   bool canSubmit = false;
   bool isLoading = false;
 
+  // HIDE AND SHOW CREATE BUTTON IF ALL FIELDS ARE FILLED
   void submitable() {
     setState(() {
       if (fullnameController.text.isNotEmpty &&
@@ -36,6 +36,7 @@ class _RegisterState extends State<Register> {
     });
   }
 
+  // HIDE AND SHOW PASSWORD FIELD AND VISIBILITY ICON
   void changeVisiblity() {
     setState(() {
       if (hidePassword) {
@@ -46,6 +47,7 @@ class _RegisterState extends State<Register> {
     });
   }
 
+  // CHANGE BUTTON STATE TO LOADING WITH SPINNER
   void processingSubmit() {
     setState(() {
       canSubmit = false;
@@ -53,6 +55,7 @@ class _RegisterState extends State<Register> {
     });
   }
 
+  // REMOVE BUTTON STATE FROM LOADING AND SPINNER
   void processedSubmit() {
     setState(() {
       canSubmit = true;
@@ -60,6 +63,7 @@ class _RegisterState extends State<Register> {
     });
   }
 
+  // GENERIC NOTIFICATION POPUP WITH BACKDROP
   void dialogMessage(type, message) {
     showDialog(
       context: context,
@@ -77,6 +81,7 @@ class _RegisterState extends State<Register> {
     );
   }
 
+  // NAVIGATION TO DASHBOARD WITH TOKEN
   void goToDashboard(token) {
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(
@@ -130,6 +135,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
             const SizedBox(height: 30),
+            // FULLNAME FIELD
             FocusScope(
               node: _focusScopeNode,
               child: CustomTextField(
@@ -140,6 +146,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
             const SizedBox(height: 15),
+            // EMAIL FIELD
             FocusScope(
               node: _focusScopeNode,
               child: CustomTextField(
@@ -150,6 +157,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
             const SizedBox(height: 15),
+            // PASSWORD FIELD
             FocusScope(
               node: _focusScopeNode,
               child: CustomPasswordField(
@@ -160,6 +168,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
             const SizedBox(height: 30),
+            // CREATE ACCOUNT BUTTON
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: SizedBox(
@@ -171,32 +180,35 @@ class _RegisterState extends State<Register> {
                           // CLOSE KEYBOARD
                           _focusScopeNode.unfocus();
 
+                          // UPDATE BUTTON STATE TO LOADING
                           processingSubmit();
 
-                          if (passwordController.text.isNotEmpty) {
-                            var data = {
-                              "fullname": fullnameController.text,
-                              "email": emailController.text,
-                              "password": passwordController.text
-                            };
+                          var data = {
+                            "fullname": fullnameController.text,
+                            "email": emailController.text,
+                            "password": passwordController.text
+                          };
 
-                            final response = await Api.register(data);
+                          // CALL REEGISTRATION API
+                          final response = await Api.register(data);
 
-                            if (response['type'] == 'success') {
-                              goToDashboard({'token': response['token']});
-                            }
-
-                            dialogMessage(
-                              response['type'],
-                              response['message'],
-                            );
-
-                            processedSubmit();
+                          // IF RESPONSE IS SUCCESSFUL, GO TO DASHBOARD
+                          if (response['type'] == 'success') {
+                            goToDashboard({'token': response['token']});
                           }
+
+                          // IF API CALL IS SUCCESSFUL OR NOT SHOW A CUSTOM MESSAGE 
+                          dialogMessage(
+                            response['type'],
+                            response['message'],
+                          );
+
+                          // UPDATE BUTTON LOADING STATE
+                          processedSubmit();
                         }
                       : null,
                   child: isLoading
-                      ? CircularProgressIndicator(
+                      ? const CircularProgressIndicator(
                           color: Colors.white,
                         )
                       : const Text(
@@ -211,6 +223,7 @@ class _RegisterState extends State<Register> {
               ),
             ),
             const SizedBox(height: 50),
+            // DIVIDER DECORATION
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: Row(
@@ -236,24 +249,25 @@ class _RegisterState extends State<Register> {
               ),
             ),
             const SizedBox(height: 30),
+            // BOTTOM SOCIAL AUTHS [FACEBOOK, GOOGLE AND APPLE]
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 30.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  CustomIconButton(
+                  customIconButton(
                     'assets/images/facebook.png',
                     onPressed: () {
                       // Facebook button onPressed logic
                     },
                   ),
-                  CustomIconButton(
+                  customIconButton(
                     'assets/images/google.png',
                     onPressed: () {
                       // Google button onPressed logic
                     },
                   ),
-                  CustomIconButton(
+                  customIconButton(
                     'assets/images/apple.png',
                     onPressed: () {
                       // Apple button onPressed logic

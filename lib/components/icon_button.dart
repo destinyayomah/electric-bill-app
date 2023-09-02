@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-Widget CustomIconButton(String imagePath, {VoidCallback? onPressed}) {
+Widget customIconButton(String imagePath, {VoidCallback? onPressed}) {
   return InkWell(
     onTap: onPressed,
     child: Container(
