@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 class Api {
-  static const baseUrl = "http://192.168.93.49:3000";
+  // static const baseUrl = "http://192.168.93.49:3000";
+  static const baseUrl = "https://electirc-bill-api.onrender.com";
 
   static register(Map data) async {
     var url = Uri.parse("$baseUrl/register");
