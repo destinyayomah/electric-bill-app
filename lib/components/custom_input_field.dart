@@ -4,15 +4,23 @@ import 'package:flutter/material.dart';
 class CustomTextField extends StatelessWidget {
   final IconData icon;
   final String hintText;
+  final TextEditingController textController;
+  final VoidCallback submitable;
 
-  const CustomTextField(
-      {super.key, required this.hintText, required this.icon});
+  const CustomTextField({
+    super.key,
+    required this.hintText,
+    required this.icon,
+    required this.textController,
+    required this.submitable,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: TextField(
+        controller: textController,
         decoration: InputDecoration(
           hintText: hintText,
           hintStyle: TextStyle(color: primaryColor),
@@ -31,19 +39,33 @@ class CustomTextField extends StatelessWidget {
             color: primaryColor,
           ),
         ),
+        onChanged: (e) => submitable(),
       ),
     );
   }
 }
 
 class CustomPasswordField extends StatelessWidget {
-  const CustomPasswordField({super.key});
+  final bool hidePassword;
+  final TextEditingController passwordController;
+  final VoidCallback submitable;
+  final VoidCallback changeVisiblity;
+
+  const CustomPasswordField({
+    super.key,
+    required this.hidePassword,
+    required this.passwordController,
+    required this.submitable,
+    required this.changeVisiblity,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: TextField(
+        controller: passwordController,
+        obscureText: hidePassword,
         decoration: InputDecoration(
           hintText: 'Enter password',
           hintStyle: TextStyle(color: primaryColor),
@@ -62,12 +84,13 @@ class CustomPasswordField extends StatelessWidget {
             color: primaryColor,
           ),
           suffixIcon: IconButton(
-            icon: const Icon(
-              Icons.remove_red_eye,
+            icon: Icon(
+              hidePassword ? Icons.visibility_off : Icons.visibility,
             ),
-            onPressed: () {},
+            onPressed: changeVisiblity,
           ),
         ),
+        onChanged: (e) => submitable(),
       ),
     );
   }

@@ -1,3 +1,7 @@
+import 'package:electricbillpayment/pages/dashboard.dart';
+import 'package:electricbillpayment/pages/home.dart';
+import 'package:electricbillpayment/pages/login.dart';
+import 'package:electricbillpayment/pages/register.dart';
 import 'package:electricbillpayment/pages/splash.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,9 +20,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: Splash(),
+      home: const Splash(),
+      routes: {
+        '/login': (context) => const Login(),
+        '/register': (context) => const Register(),
+        // '/dashboard': (context) => const Dashboard(),
+      },
     );
   }
 }
